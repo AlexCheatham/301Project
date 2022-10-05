@@ -13,12 +13,12 @@
 #include <iterator>
 #include <map>
 #include <bitset>
+#include <boost/algorithm/string.hpp> 
 
 using namespace std;
 
 class Assembler {
 
-    vector<string> binaryRep; //String representation of the binary output by pass 2 
     vector<string> lines;   //Lines of assembly code, to be altered through passes to become readable
     map<string, int> labels;    //
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
@@ -50,9 +50,17 @@ class Assembler {
 
     //Parses comments from a line
     string parseComments(string line) {
-        size_t pos{ line.find_first_of('#')};
+        size_t pos{line.find_first_of('#')};
         line.erase(pos, line.size()-pos);
         return line;
+    }
+
+    //Gets the command from the line and returns it
+    string getCommand(string line) {
+        //size_t pos{line.find_first_of(' ')};
+        string command{line.substr(0, line.find(' '))};
+        cout << command << endl;
+        return command;
     }
 
 
@@ -133,7 +141,7 @@ public:
         registerBinMap.insert(pair<string, string>("$31","11111"));
 
 
-        //Ties instructions to their opcodes
+        //Ties instructions to their opcodes or function codes 
         instructionMap.insert(pair<string, string>("add", "100000"));
         instructionMap.insert(pair<string, string>("addi", "001000"));
         instructionMap.insert(pair<string, string>("sub", "100010"));
@@ -196,12 +204,13 @@ public:
                     lines[i] = parseComments(lines[i]);
                 }
             }
-
+            
+            boost::trim(lines[i]); //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
             i++; //Increments i if the entire loop finishes, and goes on to the next iteration            
         }
 
         //Test code to make sure first pass works properly
-        
+        /*
         for (size_t i = 0; i < lines.size(); i++) {
             cout << lines[i] << endl;
         }
@@ -209,13 +218,23 @@ public:
         map<string, int>::iterator it;
         for (it = labels.begin(); it != labels.end(); it++) {
             cout << it->first << ' ' << it->second << endl;
-        } 
+        } */
         return lines;
     }  
 
     //second pass through code to convert to binary
+    //only works if first pass has been called
     vector<string> secondPass() {
 
+        vector<string> binaryRep; //String representation of the binary output by pass 2 
+
+        //For loop where we construct the string representation of the binary for each line
+        for (size_t i = 0; i < lines.size(); i++) {
+            string command{getCommand(lines[i])};
+            //cout << command << endl;
+        }
+
+        return binaryRep;
     }
 
 };
@@ -260,6 +279,7 @@ int main(int argc, char* argv[]) {
 
     //Tests to make sure the first pass works 
     test.firstPass();
+    test.secondPass();
 
     return 0;
 }
