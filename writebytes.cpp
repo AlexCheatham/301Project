@@ -5,7 +5,7 @@ using namespace std;
   
 //main program
 int main() {
-  int i = 28786720;
+  int i = 5;
   ofstream file;
   file.open("test1.txt"); //Open file in default mode (ascii)
   file << i << endl; //Write to file as a decimal ascii string (0-9)

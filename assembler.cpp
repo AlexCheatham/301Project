@@ -12,13 +12,15 @@
 #include <bits/stdc++.h>
 #include <iterator>
 #include <map>
+#include <bitset>
 
 using namespace std;
 
 class Assembler {
 
-    vector<string> lines;
-    map<string, int> labels;
+    vector<string> binaryRep; //String representation of the binary output by pass 2 
+    vector<string> lines;   //Lines of assembly code, to be altered through passes to become readable
+    map<string, int> labels;    //
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
     map<string, string> registerMap;    //map for storing the aliases of registers as actual registers
     
@@ -163,7 +165,7 @@ public:
         }
 
         //Test code to make sure first pass works properly
-        /*
+        
         for (size_t i = 0; i < lines.size(); i++) {
             cout << lines[i] << endl;
         }
@@ -171,7 +173,7 @@ public:
         map<string, int>::iterator it;
         for (it = labels.begin(); it != labels.end(); it++) {
             cout << it->first << ' ' << it->second << endl;
-        } */
+        } 
         return lines;
     }  
 
