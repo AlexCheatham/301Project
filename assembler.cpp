@@ -237,8 +237,37 @@ public:
         return binaryRep;
     }
 
-    vector<bitset<32> > secondPassTest() {
+    //takes in a vector of strings and prints every element
+    void printStrVector(vector<string> str) {
+        cout << "The elements in your vector are: ";
+        for(int i = 0; i < str.size(); i++) {
+            cout << str.at(i) << ' ';
+        }
+    }
 
+    //returns a hard coded value to what type of instruction
+    //I-type = 0, J-type = 1, R-type = 3
+    int type(string str) {
+        
+    }
+
+    //takes a reference to a vector of strings and loads commands from the file into it
+    void loadCommands(vector<string> &str) {
+        //For loop where we construct the string representation of the binary for each line
+        for (size_t i = 0; i < lines.size(); i++) {
+            string command{getCommand(lines[i])};
+            str.push_back(command);
+            //cout << command << endl;
+        }
+    }
+
+    vector<bitset<32> > secondPassTest() {
+        vector<bitset<32> > binaryRepBin; //Binary output of pass two
+        vector<string> commands; //vector to hold every command
+        loadCommands(commands);
+        
+        printStrVector(commands);
+        return binaryRepBin;
     }
 
 };
@@ -284,6 +313,7 @@ int main(int argc, char* argv[]) {
     //Tests to make sure the first pass works 
     test.firstPass();
     test.secondPass();
+    test.secondPassTest();
 
     return 0;
 }
