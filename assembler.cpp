@@ -205,7 +205,10 @@ public:
                 }
             }
             
-            boost::trim(lines[i]); //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
+            //Gets rid of leading and trailing whitespace
+            //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
+            boost::trim(lines[i]); 
+            
             i++; //Increments i if the entire loop finishes, and goes on to the next iteration            
         }
 
