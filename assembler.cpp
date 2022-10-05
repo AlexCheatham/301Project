@@ -23,6 +23,7 @@ class Assembler {
     map<string, int> labels;    //
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
     map<string, string> registerMap;    //map for storing the aliases of registers as actual registers
+    map<string, string> registerBinMap;    //map for storing the actual registers as a binary value
     
     //Stores the labels in a map, then extracts the label from the line and 
     //returns it    
@@ -64,38 +65,73 @@ public:
         lines = input;
 
         //Sets up the map pairing registers
-        registerMap.insert(pair<string, string>("$0", "$r0"));
-        registerMap.insert(pair<string, string>("$1", "$at"));
-        registerMap.insert(pair<string, string>("$2", "$v0"));
-        registerMap.insert(pair<string, string>("$3", "$v1"));
-        registerMap.insert(pair<string, string>("$4", "$a0"));
-        registerMap.insert(pair<string, string>("$5", "$a1"));
-        registerMap.insert(pair<string, string>("$6", "$a2"));
-        registerMap.insert(pair<string, string>("$7", "$a3"));
-        registerMap.insert(pair<string, string>("$8", "$t0"));
-        registerMap.insert(pair<string, string>("$9", "$t1"));
-        registerMap.insert(pair<string, string>("$10", "$t2"));
-        registerMap.insert(pair<string, string>("$11", "$t3"));
-        registerMap.insert(pair<string, string>("$12", "$t4"));
-        registerMap.insert(pair<string, string>("$13", "$t5"));
-        registerMap.insert(pair<string, string>("$14", "$t6"));
-        registerMap.insert(pair<string, string>("$15", "$t7"));
-        registerMap.insert(pair<string, string>("$16", "$s0"));
-        registerMap.insert(pair<string, string>("$17", "$s1"));
-        registerMap.insert(pair<string, string>("$18", "$s2"));
-        registerMap.insert(pair<string, string>("$19", "$s3"));
-        registerMap.insert(pair<string, string>("$20", "$s4"));
-        registerMap.insert(pair<string, string>("$21", "$s5"));
-        registerMap.insert(pair<string, string>("$22", "$s6"));
-        registerMap.insert(pair<string, string>("$23", "$s7"));
-        registerMap.insert(pair<string, string>("$24", "$t8"));
-        registerMap.insert(pair<string, string>("$25", "$t9"));
-        registerMap.insert(pair<string, string>("$26", "$k0"));
-        registerMap.insert(pair<string, string>("$27", "$k1"));
-        registerMap.insert(pair<string, string>("$28", "$gp"));
-        registerMap.insert(pair<string, string>("$29", "$sp"));
-        registerMap.insert(pair<string, string>("$30", "$s8"));
-        registerMap.insert(pair<string, string>("$31", "$ra"));
+        registerMap.insert(pair<string, string>("$r0", "$0"));
+        registerMap.insert(pair<string, string>("$at", "$1"));
+        registerMap.insert(pair<string, string>("$v0", "$2"));
+        registerMap.insert(pair<string, string>("$v1", "$3"));
+        registerMap.insert(pair<string, string>("$a0", "$4"));
+        registerMap.insert(pair<string, string>("$a1", "$5"));
+        registerMap.insert(pair<string, string>("$a2", "$6"));
+        registerMap.insert(pair<string, string>("$a3", "$7"));
+        registerMap.insert(pair<string, string>("$t0", "$8"));
+        registerMap.insert(pair<string, string>("$t1", "$9"));
+        registerMap.insert(pair<string, string>("$t2", "$10"));
+        registerMap.insert(pair<string, string>("$t3", "$11"));
+        registerMap.insert(pair<string, string>("$t4", "$12"));
+        registerMap.insert(pair<string, string>("$t5", "$13"));
+        registerMap.insert(pair<string, string>("$t6", "$14"));
+        registerMap.insert(pair<string, string>("$t7", "$15"));
+        registerMap.insert(pair<string, string>("$s0", "$16"));
+        registerMap.insert(pair<string, string>("$s1", "$17"));
+        registerMap.insert(pair<string, string>("$s2", "$18"));
+        registerMap.insert(pair<string, string>("$s3", "$19"));
+        registerMap.insert(pair<string, string>("$s4", "$20"));
+        registerMap.insert(pair<string, string>("$s5", "$21"));
+        registerMap.insert(pair<string, string>("$s6", "$22"));
+        registerMap.insert(pair<string, string>("$s7", "$23"));
+        registerMap.insert(pair<string, string>("$t8", "$24"));
+        registerMap.insert(pair<string, string>("$t9", "$25"));
+        registerMap.insert(pair<string, string>("$k0", "$26"));
+        registerMap.insert(pair<string, string>("$k1", "$27"));
+        registerMap.insert(pair<string, string>("$gp", "$28"));
+        registerMap.insert(pair<string, string>("$sp", "$29"));
+        registerMap.insert(pair<string, string>("$s8", "$30"));
+        registerMap.insert(pair<string, string>("$ra", "$31"));
+
+        //sets up the map pairing registers with their binary values;
+        registerBinMap.insert(pair<string, string>("$0", "00000"));
+        registerBinMap.insert(pair<string, string>("$1", "00001"));
+        registerBinMap.insert(pair<string, string>("$2", "00010"));
+        registerBinMap.insert(pair<string, string>("$3", "00011"));
+        registerBinMap.insert(pair<string, string>("$4", "00100"));
+        registerBinMap.insert(pair<string, string>("$5", "00101"));
+        registerBinMap.insert(pair<string, string>("$6", "00110"));
+        registerBinMap.insert(pair<string, string>("$7", "00111"));
+        registerBinMap.insert(pair<string, string>("$8", "01000"));
+        registerBinMap.insert(pair<string, string>("$9", "01001"));
+        registerBinMap.insert(pair<string, string>("$10","01010"));
+        registerBinMap.insert(pair<string, string>("$11","01011"));
+        registerBinMap.insert(pair<string, string>("$12","01100"));
+        registerBinMap.insert(pair<string, string>("$13","01101"));
+        registerBinMap.insert(pair<string, string>("$14","01110"));
+        registerBinMap.insert(pair<string, string>("$15","01111"));
+        registerBinMap.insert(pair<string, string>("$16","10000"));
+        registerBinMap.insert(pair<string, string>("$17","10001"));
+        registerBinMap.insert(pair<string, string>("$18","10010"));
+        registerBinMap.insert(pair<string, string>("$19","10011"));
+        registerBinMap.insert(pair<string, string>("$20","10100"));
+        registerBinMap.insert(pair<string, string>("$21","10101"));
+        registerBinMap.insert(pair<string, string>("$22","10110"));
+        registerBinMap.insert(pair<string, string>("$23","10111"));
+        registerBinMap.insert(pair<string, string>("$24","11000"));
+        registerBinMap.insert(pair<string, string>("$25","11001"));
+        registerBinMap.insert(pair<string, string>("$26","11010"));
+        registerBinMap.insert(pair<string, string>("$27","11011"));
+        registerBinMap.insert(pair<string, string>("$28","11100"));
+        registerBinMap.insert(pair<string, string>("$29","11101"));
+        registerBinMap.insert(pair<string, string>("$30","11110"));
+        registerBinMap.insert(pair<string, string>("$31","11111"));
+
 
         //Ties instructions to their opcodes
         instructionMap.insert(pair<string, string>("add", "100000"));
@@ -176,6 +212,11 @@ public:
         } 
         return lines;
     }  
+
+    //second pass through code to convert to binary
+    vector<string> secondPass() {
+
+    }
 
 };
 
