@@ -18,7 +18,8 @@ using namespace std;
 
 class Assembler {
 
-    vector<string> binaryRep; //String representation of the binary output by pass 2 
+    vector<bitset<32> > binaryRepBin;  //binary representation of the output by pass 2, 32 bit binary number, test by Alex
+    vector<string> binaryRep; //String representation of the binary output by pass 2
     vector<string> lines;   //Lines of assembly code, to be altered through passes to become readable
     map<string, int> labels;    //
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
@@ -215,6 +216,10 @@ public:
 
     //second pass through code to convert to binary
     vector<string> secondPass() {
+
+    }
+
+    vector<bitset<32> > secondPassTest() {
 
     }
 
