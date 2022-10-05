@@ -20,7 +20,7 @@ using namespace std;
 class Assembler {
 
     vector<string> lines;   //Lines of assembly code, to be altered through passes to become readable
-    map<string, int> labels;    //
+    map<string, int> labels;    //Stores all the labels and their line numbers
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
     map<string, string> registerMap;    //map for storing the aliases of registers as actual registers
     map<string, string> registerBinMap;    //map for storing the actual registers as a binary value
