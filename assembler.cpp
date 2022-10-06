@@ -363,7 +363,7 @@ public:
     string make_srl(vector<string> srlLine) {
         bitset<5> sa = stoi(srlLine[3]);
         string sixZeros {"000000"};
-        string srlCommand = sixZeros + "00000" + registerBinMap.at(srlLine[2]) + registerBinMap.at(srlLine[1]) + sa.to_string() + "000000";
+        string srlCommand = sixZeros + "00000" + registerBinMap.at(srlLine[2]) + registerBinMap.at(srlLine[1]) + sa.to_string() + "000010";
         return srlCommand;
     }
 
@@ -402,7 +402,7 @@ public:
     string make_sw(vector<string> swLine) {
         bitset<16> offset = getOffset(swLine[2]);
         string base = get_base(swLine[2]);
-        string swCommand = "100011" + base + registerBinMap.at(swLine[1]) + offset.to_string();
+        string swCommand = "101011" + base + registerBinMap.at(swLine[1]) + offset.to_string();
         return swCommand;
     }
 
@@ -451,7 +451,8 @@ public:
         return syscallCommand;
     }
 
-    //takes a line command vector as input, and checks to see if the value of each element is
+    //takes a line command vector as input, and checks to see if the value of each element is in the map of
+    //registers. if it is, replace it with the number value, else continue
     vector<string> cleanRegisters(vector<string> lineCommand) {
         for(int i = 0; i < lineCommand.size(); i++) {
             if(registerMap.find(lineCommand[i]) == registerMap.end()) {
@@ -552,14 +553,14 @@ int main(int argc, char* argv[]) {
 
     //Makes sure correct amount of command line arguments
     if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " [input file]" << endl;
+        cerr << "Usage: " << argv[0] << " [input file]" << " [output file]" << endl;
         exit(0);
     }    
 
     vector<string> lines; //Vector containing the lines of code from the file
     string str; //used for inputting the lines into the vector
 
-    for (int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc - 1; i++) {
         //Collects the input file and opens it 
         string inputFile = argv[i];
         ifstream myFile(inputFile);
@@ -591,9 +592,13 @@ int main(int argc, char* argv[]) {
     test.secondPass();
     vector<string> binaryString = test.secondPassTest();
     ofstream file;
-    file.open("assembleOutput.bin");
+    file.open(argv[argc-1], ios::binary);
     for(int i = 0; i < binaryString.size(); i++) {
-        file << bitset<32>(binaryString[i]) << endl;
+        int toWrite = stoi(binaryString[i]);
+        file.write((char *) &toWrite, sizeof(int));
+        // bitset<32> line = bitset<32>binaryString[i];
+        // file.write((char *) &line, sizeof(int));
+        //file << bitset<32>(binaryString[i]) << endl;
         cout << bitset<32>(binaryString[i]) << endl;
     }
     file.close();
