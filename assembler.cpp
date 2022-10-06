@@ -594,8 +594,8 @@ int main(int argc, char* argv[]) {
     ofstream file;
     file.open(argv[argc-1], ios::binary);
     for(int i = 0; i < binaryString.size(); i++) {
-        long int toWrite = stol(binaryString[i],nullptr,2);
-        file.write((char *) &toWrite, sizeof(long int));
+        int toWrite = stoi(binaryString[i],nullptr,2);
+        file.write((char *) &toWrite, sizeof(int));
         // bitset<32> line = bitset<32>binaryString[i];
         // file.write((char *) &line, sizeof(int));
         //file << bitset<32>(binaryString[i]) << endl;
