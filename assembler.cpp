@@ -305,36 +305,19 @@ public:
         return lineCommand;
     }
 
-    // //creates binary as a string for I type instructions
-    // string I_type(string command, int lineNumber) {
-    //     return "I_type works";
-    // }
-
-    // //creates binary as a string for J type instructions
-    // string J_type(string command, int lineNumber) {
-    //     return "J_type works";
-    // }
-
-    // //creates binary as a string for R type instructions
-    // //all zero op code, function code is in the map
-    // string R_type(string command, int lineNumber) {
-    //     if (command.compare("add") == 0) {
-
-    //     } else if
-    //     vector<string> lineCommand = getLineCommand(lineNumber);
-    //     printStrVector(lineCommand);
-    //     return "R_type works";
-    // }
-
     //function to make the add command into binary
     string make_add(vector<string> addLine) {
-        string addCommand = "000000" + addLine[2] + addLine[3] + addLine[1] + "00000" + "100000";
+        string addCommand = "000000" + registerBinMap.at(addLine[2]) + registerBinMap.at(addLine[3]) + registerBinMap.at(addLine[1]) + "00000" + "100000";
         return addCommand;
     }
 
+    string make_addi(vector<string> addiLine) {
+        bitset<16> immediate = stoi(addiLine[3]);
+        string addiCommand = "001000" + registerBinMap.at(addiLine[2]) + registerBinMap.at(addiLine[1]) + immediate.to_string();
+        return addiCommand;
+    }
+
     //takes a line command vector as input, and checks to see if the value of each element is
-    //a key to the registermap. If it is, replace the value of the element with the value
-    //currently needs to be fixed
     vector<string> cleanRegisters(vector<string> lineCommand) {
         for(int i = 0; i < lineCommand.size(); i++) {
             if(registerMap.find(lineCommand[i]) == registerMap.end()) {
@@ -346,12 +329,22 @@ public:
         return lineCommand;
     }
 
+    //iterates through each string in a string vector and removes any present commas
+    vector<string> removeCommas(vector<string> lineCommand) {
+        for(int i = 0; i < lineCommand.size(); i++) {
+            while(lineCommand[i].find(',') != -1) {
+                lineCommand[i].erase(lineCommand[i].find(','));
+            }
+        }
+        return lineCommand;
+    }
+
     //builds a binary command for second pass
     string buildCommand(string command, int lineNumber) {
         string commandTemp;
-        vector<string> lineCommand = getLineCommand(lineNumber);
+        vector<string> lineCommand = cleanRegisters(removeCommas(getLineCommand(lineNumber)));
         printStrVector(lineCommand);
-        cleanRegisters(lineCommand);
+        //cleanRegisters(lineCommand);
         printStrVector(lineCommand);
         //int typeVal;
         //typeVal = {type(command)};
@@ -373,7 +366,7 @@ public:
         if (command.compare("add") == 0) {
             return make_add(lineCommand);
         } else if (command.compare("addi") == 0) {
-
+            return make_addi(lineCommand);
         } else if (command.compare("sub") == 0) {
 
         } else if (command.compare("mult") == 0) {
