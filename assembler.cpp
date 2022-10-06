@@ -591,9 +591,10 @@ int main(int argc, char* argv[]) {
     test.secondPass();
     vector<string> binaryString = test.secondPassTest();
     ofstream file;
-    file.open("assembleOutput.txt");
+    file.open("assembleOutput.bin");
     for(int i = 0; i < binaryString.size(); i++) {
-        file << binaryString[i] << endl;
+        file << bitset<32>(binaryString[i]) << endl;
+        cout << bitset<32>(binaryString[i]) << endl;
     }
     file.close();
     return 0;
