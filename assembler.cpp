@@ -366,32 +366,42 @@ public:
         return srlCommand;
     }
 
-    // //helper method for make_lw and make_sw to get offset from a string
-    // bitset<16> getOffset(string offset) {
-    //     bitset<16> offsetReturn = stoi(offset.substr(0, offset.find_first_of('(')-1));
-    //     return offsetReturn;
-    // }
+    //helper method for make_lw and make_sw to get offset from a string
+    bitset<16> getOffset(string offset) {
+        cout << "offset: " << offset << endl;
+        bitset<16> offsetReturn = stoi(offset.substr(0, offset.find_first_of('(')));
+        return offsetReturn;
+    }
 
-    // //helper method for make_lw and make_sw to get the base from a string
-    // string get_base(string baseString) {
-    //     string baseReturn = baseString.substr(baseString.find_first_of('('), baseString.find_first_of(')')-1);
-    //     baseReturn = registerBinMap.at(baseReturn);
-    //     return baseReturn;
-    // }
+    //helper method for make_lw and make_sw to get the base from a string
+    string get_base(string baseString) {
+        cout << "baseString: " << baseString << endl;
+        size_t begin{baseString.find_first_of('(')};
+        size_t end{baseString.size() - 2};
+        string baseReturn{baseString.substr(begin+1, end)};
+        //string baseReturn = baseString.substr(baseString.find_first_of('(')+1, baseString.find_first_of(')')-2);
+        cout << "baseReturn: " << baseReturn << endl;
+        if(registerMap.find(baseReturn) != registerMap.end()) {
+            baseReturn = registerMap.at(baseReturn);
 
-    // string make_lw(vector<string> lwLine) {
-    //     bitset<16> offset = getOffset(lwLine[2]);
-    //     string base = get_base(lwLine[2]);
-    //     string lwCommand = "100011" + base + registerBinMap.at(lwLine[1]) + offset.to_string();
-    //     return lwCommand;
-    // }
+        }
+        baseReturn = registerBinMap.at(baseReturn);
+        return baseReturn;
+    }
 
-    // string make_sw(vector<string> swLine) {
-    //     bitset<16> offset = getOffset(swLine[2]);
-    //     string base = get_base(swLine[2]);
-    //     string swCommand = "100011" + base + registerBinMap.at(swLine[1]) + offset.to_string();
-    //     return swCommand;
-    // }
+    string make_lw(vector<string> lwLine) {
+        bitset<16> offset = getOffset(lwLine[2]);
+        string base = get_base(lwLine[2]);
+        string lwCommand = "100011" + base + registerBinMap.at(lwLine[1]) + offset.to_string();
+        return lwCommand;
+    }
+
+    string make_sw(vector<string> swLine) {
+        bitset<16> offset = getOffset(swLine[2]);
+        string base = get_base(swLine[2]);
+        string swCommand = "100011" + base + registerBinMap.at(swLine[1]) + offset.to_string();
+        return swCommand;
+    }
 
     string make_slt(vector<string> sltLine) {
         string sltCommand = "000000" + registerBinMap.at(sltLine[2]) + registerBinMap.at(sltLine[3]) + registerBinMap.at(sltLine[1]) + "00000" + "101010";
@@ -481,9 +491,9 @@ public:
         } else if (command.compare("srl") == 0) {
             return make_srl(lineCommand);
         } else if (command.compare("lw") == 0) {
-            //return make_lw(lineCommand);
+            return make_lw(lineCommand);
         } else if (command.compare("sw") == 0) {
-            //return make_sw(lineCommand);
+            return make_sw(lineCommand);
         } else if (command.compare("slt") == 0) {
             return make_slt(lineCommand);
         } else if (command.compare("beq") == 0) {
