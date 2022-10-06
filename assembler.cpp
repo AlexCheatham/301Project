@@ -317,6 +317,16 @@ public:
         return addiCommand;
     }
 
+    string make_sub(vector<string> subLine) {
+        string addCommand = "000000" + registerBinMap.at(subLine[2]) + registerBinMap.at(subLine[3]) + registerBinMap.at(subLine[1]) + "00000" + "100010";
+        return addCommand;
+    }
+
+    string make_mult(vector<string> multLine) {
+        string multCommand = "000000" + registerBinMap.at(multLine[1]) + registerBinMap.at(multLine[2]) + "0000000000" + "011000";
+        return multCommand;
+    }
+
     //takes a line command vector as input, and checks to see if the value of each element is
     vector<string> cleanRegisters(vector<string> lineCommand) {
         for(int i = 0; i < lineCommand.size(); i++) {
@@ -346,31 +356,15 @@ public:
         printStrVector(lineCommand);
         //cleanRegisters(lineCommand);
         printStrVector(lineCommand);
-        //int typeVal;
-        //typeVal = {type(command)};
 
-        // if(typeVal==0) {
-        //     commandTemp = I_type(command, lineNumber);
-        //     return commandTemp;
-        // }
-
-        // if(typeVal==1) {
-        //     commandTemp = J_type(command, lineNumber);
-        //     return commandTemp;
-        // }
-        
-        // if(typeVal==2) {
-        //     commandTemp = R_type(command, lineNumber);
-        //     return commandTemp;
-        // }
         if (command.compare("add") == 0) {
             return make_add(lineCommand);
         } else if (command.compare("addi") == 0) {
             return make_addi(lineCommand);
         } else if (command.compare("sub") == 0) {
-
+            return make_sub(lineCommand);
         } else if (command.compare("mult") == 0) {
-
+            return make_mult(lineCommand);
         } else if (command.compare("div") == 0) {
 
         } else if (command.compare("mflo") == 0) {
