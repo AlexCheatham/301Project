@@ -445,6 +445,12 @@ public:
         return jalrCommand;
     }
 
+    string make_syscall(vector<string> syscallLine) {
+        string syscallZeros{"00000000000000000000"};
+        string syscallCommand = "000000" + syscallZeros + "001100";
+        return syscallCommand;
+    }
+
     //takes a line command vector as input, and checks to see if the value of each element is
     vector<string> cleanRegisters(vector<string> lineCommand) {
         for(int i = 0; i < lineCommand.size(); i++) {
@@ -512,7 +518,7 @@ public:
         } else if (command.compare("jalr") == 0) {
             return make_jalr(lineCommand);
         } else if (command.compare("syscall") == 0) {
-
+            return make_syscall(lineCommand);
         } 
         return "Not a function type";
 
@@ -583,7 +589,13 @@ int main(int argc, char* argv[]) {
     //Tests to make sure the first pass works 
     test.firstPass();
     test.secondPass();
-    test.secondPassTest();
-
+    vector<string> binaryString = test.secondPassTest();
+    ofstream file;
+    file.open("assembleOutput.bin");
+    for(int i = 0; i < binaryString.size(); i++) {
+        file << bitset<32>(binaryString[i]) << endl;
+        cout << bitset<32>(binaryString[i]) << endl;
+    }
+    file.close();
     return 0;
 }
