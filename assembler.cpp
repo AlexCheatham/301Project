@@ -411,14 +411,14 @@ public:
         return sltCommand;
     }
 
-    string make_beq(vector<string> beqLine) {
-        bitset<16> offset = labels.at(beqLine[3]);
+    string make_beq(vector<string> beqLine, int ln) {
+        bitset<16> offset = labels.at(beqLine[3]) - ln - 1;
         string beqCommand = "000100" + registerBinMap.at(beqLine[1]) + registerBinMap.at(beqLine[2]) + offset.to_string();
         return beqCommand;
     }
 
-    string make_bne(vector<string> bneLine) {
-        bitset<16> offset = labels.at(bneLine[3]);
+    string make_bne(vector<string> bneLine, int ln) {
+        bitset<16> offset = labels.at(bneLine[3]) - ln - 1;
         string bneCommand = "000101" + registerBinMap.at(bneLine[1]) + registerBinMap.at(bneLine[2]) + offset.to_string();
         return bneCommand;
     }
@@ -507,9 +507,9 @@ public:
         } else if (command.compare("slt") == 0) {
             return make_slt(lineCommand);
         } else if (command.compare("beq") == 0) {
-            return make_beq(lineCommand);
+            return make_beq(lineCommand, lineNumber);
         } else if (command.compare("bne") == 0) {
-            return make_bne(lineCommand);
+            return make_bne(lineCommand, lineNumber);
         } else if (command.compare("j") == 0) {
             return make_j(lineCommand);
         } else if (command.compare("jal") == 0) {
@@ -592,7 +592,7 @@ int main(int argc, char* argv[]) {
     test.secondPass();
     vector<string> binaryString = test.secondPassTest();
     ofstream file;
-    file.open(argv[argc-1], ios::binary);
+    /*file.open(argv[argc-1], ios::binary);
     for(int i = 0; i < binaryString.size(); i++) {
         long int toWrite = stol(binaryString[i],nullptr,2);
         file.write((char *) &toWrite, sizeof(long int));
@@ -601,6 +601,6 @@ int main(int argc, char* argv[]) {
         //file << bitset<32>(binaryString[i]) << endl;
         cout << bitset<32>(binaryString[i]) << endl;
     }
-    file.close();
+    file.close();*/
     return 0;
 }
