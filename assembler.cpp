@@ -352,6 +352,7 @@ public:
         return mfhiCommand;
     }
 
+    //makes sll string 
     string make_sll(vector<string> sllLine) {
         bitset<5> sa = stoi(sllLine[3]);
         string sixZeros {"000000"};
