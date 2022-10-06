@@ -375,12 +375,14 @@ public:
 
     //helper method for make_lw and make_sw to get the base from a string
     string get_base(string baseString) {
-        cout << "baseString: " << baseString << endl;
-        size_t begin{baseString.find_first_of('(')};
-        size_t end{baseString.size() - 2};
-        string baseReturn{baseString.substr(begin+1, end)};
+        //boost::trim(baseString); 
+        //cout << "baseString: " << baseString << endl;
+        size_t begin{baseString.find_first_of('(')+1};
+        size_t end{baseString.size() - 1};
+        //cout << begin << ' ' << end << endl;
+        string baseReturn = baseString.substr(begin, end-begin);
         //string baseReturn = baseString.substr(baseString.find_first_of('(')+1, baseString.find_first_of(')')-2);
-        cout << "baseReturn: " << baseReturn << endl;
+        //cout << "baseReturn: " << baseReturn << endl;
         if(registerMap.find(baseReturn) != registerMap.end()) {
             baseReturn = registerMap.at(baseReturn);
 
