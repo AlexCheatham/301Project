@@ -20,6 +20,7 @@ using namespace std;
 class Assembler {
 
     vector<string> lines;   //Lines of assembly code, to be altered through passes to become readable
+    map<string, int> instructionType; //map that stores the type of
     map<string, int> labels;    //Stores all the labels and their line numbers
     map<string, string> instructionMap;   //map for storing the MIPS instructions paired with their op code as a string int pair
     map<string, string> registerMap;    //map for storing the aliases of registers as actual registers
@@ -73,6 +74,7 @@ public:
         lines = input;
 
         //Sets up the map pairing registers
+        registerMap.insert(pair<string, string>("$zero", "$0"));
         registerMap.insert(pair<string, string>("$r0", "$0"));
         registerMap.insert(pair<string, string>("$at", "$1"));
         registerMap.insert(pair<string, string>("$v0", "$2"));
@@ -161,6 +163,29 @@ public:
         instructionMap.insert(pair<string, string>("jr", "001000"));
         instructionMap.insert(pair<string, string>("jalr", "001001"));
         instructionMap.insert(pair<string, string>("syscall", "001100"));
+
+        //sets up map that holds values for each type of instruction
+        //I-type = 0, J-type = 1, R-type = 2
+        instructionType.insert(pair<string, int>("add", 2));
+        instructionType.insert(pair<string, int>("addi", 0));
+        instructionType.insert(pair<string, int>("sub", 2));
+        instructionType.insert(pair<string, int>("mult", 2));
+        instructionType.insert(pair<string, int>("div", 2));
+        instructionType.insert(pair<string, int>("mflo", 2));
+        instructionType.insert(pair<string, int>("mfhi", 2));
+        instructionType.insert(pair<string, int>("sll", 2));
+        instructionType.insert(pair<string, int>("srl", 2));
+        instructionType.insert(pair<string, int>("lw", 0));
+        instructionType.insert(pair<string, int>("sw", 0));
+        instructionType.insert(pair<string, int>("slt", 2));
+        instructionType.insert(pair<string, int>("beq", 0));
+        instructionType.insert(pair<string, int>("bne", 0));
+        instructionType.insert(pair<string, int>("j", 1));
+        instructionType.insert(pair<string, int>("jal", 1));
+        instructionType.insert(pair<string, int>("jr", 2));
+        instructionType.insert(pair<string, int>("jalr", 2));
+        instructionType.insert(pair<string, int>("syscall", 2));
+
     }
 
     //Destructor
@@ -169,12 +194,15 @@ public:
     //Does the first pass on the code, removing labels and storing them,
     //as well as getting rid of comments other lines we can ignore
     vector<string> firstPass() {
-
+        
         //Useful variables for setting up a while loop
         vector<string> tokens;
         size_t i{0};        
 
         while (i < lines.size()) {
+            //Gets rid of leading and tailing whitespace
+            //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
+            boost::trim(lines[i]); 
 
             //Removes empty lines and lines we can ignore.
             if((lines[i].empty())
@@ -205,10 +233,7 @@ public:
                 }
             }
             
-            //Gets rid of leading and trailing whitespace
-            //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
-            boost::trim(lines[i]); 
-            
+
             i++; //Increments i if the entire loop finishes, and goes on to the next iteration            
         }
 
@@ -242,16 +267,17 @@ public:
 
     //takes in a vector of strings and prints every element
     void printStrVector(vector<string> str) {
-        cout << "The elements in your vector are: ";
+        cout << "The elements in your vector are: " << endl;
         for(int i = 0; i < str.size(); i++) {
-            cout << str.at(i) << ' ';
+            cout << str.at(i) << ' ' << endl;
+            //cout << "Command type is: " << type(str.at(i)) << endl; //tests type function
         }
     }
 
     //returns a hard coded value to what type of instruction
-    //I-type = 0, J-type = 1, R-type = 3
+    //I-type = 0, J-type = 1, R-type = 2
     int type(string str) {
-        
+        return instructionType.at(str);
     }
 
     //takes a reference to a vector of strings and loads commands from the file into it
@@ -264,12 +290,148 @@ public:
         }
     }
 
-    vector<bitset<32> > secondPassTest() {
-        vector<bitset<32> > binaryRepBin; //Binary output of pass two
+    //returns a vector string containing each element of a command separated by whitespace
+    //dont forget to remove commas, you could probably do that here
+    vector<string> getLineCommand(int lineNum) {
+        vector<string> lineCommand;
+        string singleLine = lines[lineNum];
+        stringstream check1(singleLine);
+        string intermediate;
+
+        while(getline(check1, intermediate, ' ')) {
+            lineCommand.push_back(intermediate);
+        }
+
+        return lineCommand;
+    }
+
+    // //creates binary as a string for I type instructions
+    // string I_type(string command, int lineNumber) {
+    //     return "I_type works";
+    // }
+
+    // //creates binary as a string for J type instructions
+    // string J_type(string command, int lineNumber) {
+    //     return "J_type works";
+    // }
+
+    // //creates binary as a string for R type instructions
+    // //all zero op code, function code is in the map
+    // string R_type(string command, int lineNumber) {
+    //     if (command.compare("add") == 0) {
+
+    //     } else if
+    //     vector<string> lineCommand = getLineCommand(lineNumber);
+    //     printStrVector(lineCommand);
+    //     return "R_type works";
+    // }
+
+    //function to make the add command into binary
+    string make_add(vector<string> addLine) {
+        string addCommand = "000000" + addLine[2] + addLine[3] + addLine[1] + "00000" + "100000";
+        return addCommand;
+    }
+
+    //takes a line command vector as input, and checks to see if the value of each element is
+    //a key to the registermap. If it is, replace the value of the element with the value
+    //currently needs to be fixed
+    vector<string> cleanRegisters(vector<string> lineCommand) {
+        for(int i = 0; i < lineCommand.size(); i++) {
+            if(registerMap.find(lineCommand[i]) == registerMap.end()) {
+                continue;
+            } else {
+                lineCommand.at(i) = registerMap.at(lineCommand[i]);
+            }
+        }
+        return lineCommand;
+    }
+
+    //builds a binary command for second pass
+    string buildCommand(string command, int lineNumber) {
+        string commandTemp;
+        vector<string> lineCommand = getLineCommand(lineNumber);
+        printStrVector(lineCommand);
+        cleanRegisters(lineCommand);
+        printStrVector(lineCommand);
+        //int typeVal;
+        //typeVal = {type(command)};
+
+        // if(typeVal==0) {
+        //     commandTemp = I_type(command, lineNumber);
+        //     return commandTemp;
+        // }
+
+        // if(typeVal==1) {
+        //     commandTemp = J_type(command, lineNumber);
+        //     return commandTemp;
+        // }
+        
+        // if(typeVal==2) {
+        //     commandTemp = R_type(command, lineNumber);
+        //     return commandTemp;
+        // }
+        if (command.compare("add") == 0) {
+            return make_add(lineCommand);
+        } else if (command.compare("addi") == 0) {
+
+        } else if (command.compare("sub") == 0) {
+
+        } else if (command.compare("mult") == 0) {
+
+        } else if (command.compare("div") == 0) {
+
+        } else if (command.compare("mflo") == 0) {
+
+        } else if (command.compare("mfhi") == 0) {
+
+        } else if (command.compare("sll") == 0) {
+
+        } else if (command.compare("srl") == 0) {
+
+        } else if (command.compare("lw") == 0) {
+
+        } else if (command.compare("sw") == 0) {
+
+        } else if (command.compare("slt") == 0) {
+
+        } else if (command.compare("beq") == 0) {
+
+        } else if (command.compare("bne") == 0) {
+
+        } else if (command.compare("j") == 0) {
+
+        } else if (command.compare("jal") == 0) {
+
+        } else if (command.compare("jr") == 0) {
+
+        } else if (command.compare("jalr") == 0) {
+
+        } else if (command.compare("syscall") == 0) {
+
+        } 
+        return "Not a function type";
+
+    }
+
+    //accepts a reference to commands and binaryRepBin, and loops through every element of commands,
+    //building the command at commands
+    void AlexSecondPass(vector<string> &commands, vector<string> &binaryRepBin) {
+        //cout << "Number of commands " << commands.size() << endl;
+        for(int i = 0; i < commands.size(); i++) {
+            //cout << "command number: " << i << endl;
+            binaryRepBin.push_back(buildCommand(commands.at(i),i));
+        }
+    }    
+
+    //this is the actual method that starts the second pass, name needs to be changed
+    vector<string> secondPassTest() {
+        vector<string> binaryRepBin; //Binary output of pass two as a string
         vector<string> commands; //vector to hold every command
         loadCommands(commands);
-        
-        printStrVector(commands);
+        //cout << "commands size: " << commands.size() << endl;
+        AlexSecondPass(commands, binaryRepBin);
+        //printStrVector(commands);
+        printStrVector(binaryRepBin);
         return binaryRepBin;
     }
 
