@@ -194,13 +194,13 @@ public:
     //Does the first pass on the code, removing labels and storing them,
     //as well as getting rid of comments other lines we can ignore
     vector<string> firstPass() {
-
+        
         //Useful variables for setting up a while loop
         vector<string> tokens;
         size_t i{0};        
 
         while (i < lines.size()) {
-            
+            //Gets rid of leading and tailing whitespace
             //Found this from https://stackoverflow.com/questions/556277/trim-remove-a-tab-t-from-a-string
             boost::trim(lines[i]); 
 
@@ -233,6 +233,7 @@ public:
                 }
             }
             
+
             i++; //Increments i if the entire loop finishes, and goes on to the next iteration            
         }
 
