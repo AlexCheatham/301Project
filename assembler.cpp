@@ -592,7 +592,7 @@ int main(int argc, char* argv[]) {
     test.secondPass();
     vector<string> binaryString = test.secondPassTest();
     ofstream file;
-    /*file.open(argv[argc-1], ios::binary);
+    file.open(argv[argc-1], ios::binary);
     for(int i = 0; i < binaryString.size(); i++) {
         long int toWrite = stol(binaryString[i],nullptr,2);
         file.write((char *) &toWrite, sizeof(long int));
@@ -601,6 +601,6 @@ int main(int argc, char* argv[]) {
         //file << bitset<32>(binaryString[i]) << endl;
         cout << bitset<32>(binaryString[i]) << endl;
     }
-    file.close();*/
+    file.close();
     return 0;
 }
