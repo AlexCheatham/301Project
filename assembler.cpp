@@ -317,6 +317,121 @@ public:
         return addiCommand;
     }
 
+    string make_sub(vector<string> subLine) {
+        string addCommand = "000000" + registerBinMap.at(subLine[2]) + registerBinMap.at(subLine[3]) + registerBinMap.at(subLine[1]) + "00000" + "100010";
+        return addCommand;
+    }
+
+    string make_mult(vector<string> multLine) {
+        string multCommand = "000000" + registerBinMap.at(multLine[1]) + registerBinMap.at(multLine[2]) + "0000000000" + "011000";
+        return multCommand;
+    }
+
+    string make_div(vector<string> divLine) {
+        string divCommand = "000000" + registerBinMap.at(divLine[1]) + registerBinMap.at(divLine[2]) + "0000000000" + "011010";
+        return divCommand;
+    }
+
+    //need to initialize the first two string separately otherwise it breaks with the error 
+    //error: invalid operands of types ‘const char [7]’ and ‘const char [11]’ to binary ‘operator+’
+    //currently works
+    string make_mflo(vector<string> mfloLine) {
+        string sixZeros {"000000"};
+        string tenZeros {"0000000000"};
+        string mfloCommand = sixZeros + tenZeros + registerBinMap.at(mfloLine[1]) + "00000" + "010010";
+        return mfloCommand;
+    }
+
+    //need to initialize the first two string separately otherwise it breaks with the error 
+    //error: invalid operands of types ‘const char [7]’ and ‘const char [11]’ to binary ‘operator+’
+    //currently works
+    string make_mfhi(vector<string> mfhiLine) {
+        string sixZeros {"000000"};
+        string tenZeros {"0000000000"};
+        string mfhiCommand = sixZeros + tenZeros + registerBinMap.at(mfhiLine[1]) + "00000" + "010010";
+        return mfhiCommand;
+    }
+
+    string make_sll(vector<string> sllLine) {
+        bitset<5> sa = stoi(sllLine[3]);
+        string sixZeros {"000000"};
+        string sllCommand = sixZeros + "00000" + registerBinMap.at(sllLine[2]) + registerBinMap.at(sllLine[1]) + sa.to_string() + "000000";
+        return sllCommand;
+    }
+
+    string make_srl(vector<string> srlLine) {
+        bitset<5> sa = stoi(srlLine[3]);
+        string sixZeros {"000000"};
+        string srlCommand = sixZeros + "00000" + registerBinMap.at(srlLine[2]) + registerBinMap.at(srlLine[1]) + sa.to_string() + "000000";
+        return srlCommand;
+    }
+
+    // //helper method for make_lw and make_sw to get offset from a string
+    // bitset<16> getOffset(string offset) {
+    //     bitset<16> offsetReturn = stoi(offset.substr(0, offset.find_first_of('(')-1));
+    //     return offsetReturn;
+    // }
+
+    // //helper method for make_lw and make_sw to get the base from a string
+    // string get_base(string baseString) {
+    //     string baseReturn = baseString.substr(baseString.find_first_of('('), baseString.find_first_of(')')-1);
+    //     baseReturn = registerBinMap.at(baseReturn);
+    //     return baseReturn;
+    // }
+
+    // string make_lw(vector<string> lwLine) {
+    //     bitset<16> offset = getOffset(lwLine[2]);
+    //     string base = get_base(lwLine[2]);
+    //     string lwCommand = "100011" + base + registerBinMap.at(lwLine[1]) + offset.to_string();
+    //     return lwCommand;
+    // }
+
+    // string make_sw(vector<string> swLine) {
+    //     bitset<16> offset = getOffset(swLine[2]);
+    //     string base = get_base(swLine[2]);
+    //     string swCommand = "100011" + base + registerBinMap.at(swLine[1]) + offset.to_string();
+    //     return swCommand;
+    // }
+
+    string make_slt(vector<string> sltLine) {
+        string sltCommand = "000000" + registerBinMap.at(sltLine[2]) + registerBinMap.at(sltLine[3]) + registerBinMap.at(sltLine[1]) + "00000" + "101010";
+        return sltCommand;
+    }
+
+    string make_beq(vector<string> beqLine) {
+        bitset<16> offset = labels.at(beqLine[3]);
+        string beqCommand = "000100" + registerBinMap.at(beqLine[1]) + registerBinMap.at(beqLine[2]) + offset.to_string();
+        return beqCommand;
+    }
+
+    string make_bne(vector<string> bneLine) {
+        bitset<16> offset = labels.at(bneLine[3]);
+        string bneCommand = "000101" + registerBinMap.at(bneLine[1]) + registerBinMap.at(bneLine[2]) + offset.to_string();
+        return bneCommand;
+    }
+
+    string make_j(vector<string> jLine) {
+        bitset<26> target = labels.at(jLine[1]);
+        string jCommand = "000010" + target.to_string();
+        return jCommand;
+    }
+
+    string make_jal(vector<string> jalLine) {
+        bitset<26> target = labels.at(jalLine[1]);
+        string jalCommand = "000011" + target.to_string();
+        return jalCommand;
+    }
+
+    string make_jr(vector<string> jrLine) {
+        string jrCommand = "000000" + registerBinMap.at(jrLine[1]) + "000000000000000" + "001000";
+        return jrCommand;
+    }
+
+    string make_jalr(vector<string> jalrLine) {
+        string jalrCommand = "000000" + registerBinMap.at(jalrLine[2]) + "00000" + registerBinMap.at(jalrLine[1]) + "00000" + "001001";
+        return jalrCommand;
+    }
+
     //takes a line command vector as input, and checks to see if the value of each element is
     vector<string> cleanRegisters(vector<string> lineCommand) {
         for(int i = 0; i < lineCommand.size(); i++) {
@@ -346,59 +461,43 @@ public:
         printStrVector(lineCommand);
         //cleanRegisters(lineCommand);
         printStrVector(lineCommand);
-        //int typeVal;
-        //typeVal = {type(command)};
 
-        // if(typeVal==0) {
-        //     commandTemp = I_type(command, lineNumber);
-        //     return commandTemp;
-        // }
-
-        // if(typeVal==1) {
-        //     commandTemp = J_type(command, lineNumber);
-        //     return commandTemp;
-        // }
-        
-        // if(typeVal==2) {
-        //     commandTemp = R_type(command, lineNumber);
-        //     return commandTemp;
-        // }
         if (command.compare("add") == 0) {
             return make_add(lineCommand);
         } else if (command.compare("addi") == 0) {
             return make_addi(lineCommand);
         } else if (command.compare("sub") == 0) {
-
+            return make_sub(lineCommand);
         } else if (command.compare("mult") == 0) {
-
+            return make_mult(lineCommand);
         } else if (command.compare("div") == 0) {
-
+            return make_div(lineCommand);
         } else if (command.compare("mflo") == 0) {
-
+            return make_mflo(lineCommand);
         } else if (command.compare("mfhi") == 0) {
-
+            return make_mfhi(lineCommand);
         } else if (command.compare("sll") == 0) {
-
+            return make_sll(lineCommand);
         } else if (command.compare("srl") == 0) {
-
+            return make_srl(lineCommand);
         } else if (command.compare("lw") == 0) {
-
+            //return make_lw(lineCommand);
         } else if (command.compare("sw") == 0) {
-
+            //return make_sw(lineCommand);
         } else if (command.compare("slt") == 0) {
-
+            return make_slt(lineCommand);
         } else if (command.compare("beq") == 0) {
-
+            return make_beq(lineCommand);
         } else if (command.compare("bne") == 0) {
-
+            return make_bne(lineCommand);
         } else if (command.compare("j") == 0) {
-
+            return make_j(lineCommand);
         } else if (command.compare("jal") == 0) {
-
+            return make_jal(lineCommand);
         } else if (command.compare("jr") == 0) {
-
+            return make_jr(lineCommand);
         } else if (command.compare("jalr") == 0) {
-
+            return make_jalr(lineCommand);
         } else if (command.compare("syscall") == 0) {
 
         } 
