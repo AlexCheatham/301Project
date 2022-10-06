@@ -589,7 +589,12 @@ int main(int argc, char* argv[]) {
     //Tests to make sure the first pass works 
     test.firstPass();
     test.secondPass();
-    test.secondPassTest();
-
+    vector<string> binaryString = test.secondPassTest();
+    ofstream file;
+    file.open("assembleOutput.txt");
+    for(int i = 0; i < binaryString.size(); i++) {
+        file << binaryString[i] << endl;
+    }
+    file.close();
     return 0;
 }
