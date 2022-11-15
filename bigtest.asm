@@ -61,5 +61,6 @@ secondcalldone:
   addi $sp, $sp, 16
   jr $ra
 end:
-  addi $v0, $zero, 10
-  syscall #End the program
+  addi $s0, $v0, 0
+final:
+  j final
