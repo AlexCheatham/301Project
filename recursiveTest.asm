@@ -5,7 +5,7 @@ main:
     j end
 
 f:
-    bne $a0, 0, fend
+    bne $a0, $0, fend
     addi $v0, $0, 0
     jr $ra
 fend:
