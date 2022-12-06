@@ -348,7 +348,7 @@ public:
     string make_mfhi(vector<string> mfhiLine) {
         string sixZeros {"000000"};
         string tenZeros {"0000000000"};
-        string mfhiCommand = sixZeros + tenZeros + registerBinMap.at(mfhiLine[1]) + "00000" + "010010";
+        string mfhiCommand = sixZeros + tenZeros + registerBinMap.at(mfhiLine[1]) + "00000" + "010000";
         return mfhiCommand;
     }
 
