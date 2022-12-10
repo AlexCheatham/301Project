@@ -441,13 +441,21 @@ public:
     }
 
     string make_jalr(vector<string> jalrLine) {
-        string jalrCommand = "000000" + registerBinMap.at(jalrLine[2]) + "00000" + registerBinMap.at(jalrLine[1]) + "00000" + "001001";
+        string jalrCommand;
+        if(jalrLine.size() == 2) {
+            jalrCommand = "000000" + registerBinMap.at("$31") + "00000" + registerBinMap.at(jalrLine[1]) + "00000" + "001001";    
+        }
+        else {
+            jalrCommand = "000000" + registerBinMap.at(jalrLine[2]) + "00000" + registerBinMap.at(jalrLine[1]) + "00000" + "001001";            
+        }
+        // string jalrCommand = "000000" + registerBinMap.at(jalrLine[2]) + "00000" + registerBinMap.at(jalrLine[1]) + "00000" + "001001";
         return jalrCommand;
     }
 
     string make_syscall(vector<string> syscallLine) {
-        string syscallZeros{"00000000000000000000"};
-        string syscallCommand = "000000" + syscallZeros + "001100";
+        //string syscallZeros{"00000000000000000000"};
+        //string syscallCommand = "000000" + syscallZeros + "001100";
+        string syscallCommand = "000000" + registerBinMap.at("$26") + "00000" + registerBinMap.at("$0") + "00000" + "001001";
         return syscallCommand;
     }
 
