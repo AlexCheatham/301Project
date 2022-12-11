@@ -455,7 +455,7 @@ public:
     string make_syscall(vector<string> syscallLine) {
         //string syscallZeros{"00000000000000000000"};
         //string syscallCommand = "000000" + syscallZeros + "001100";
-        string syscallCommand = "000000" + registerBinMap.at("$26") + "00000" + registerBinMap.at("$0") + "00000" + "001001";
+        string syscallCommand = "000000" + registerBinMap.at("$0") + "00000" + registerBinMap.at("$26") + "00000" + "001001";
         return syscallCommand;
     }
 
